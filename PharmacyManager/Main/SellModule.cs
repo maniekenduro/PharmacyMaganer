@@ -388,7 +388,7 @@ namespace Main
 			}
 		}
 		
-		public static void ConfirmSM(List<Medicine> listmed, List<Order> listrorder, List<Prescription> listprescript)
+		public static void ConfirmSM(List<Medicine> listmed, List<Order> listrorder)
 		{
 			foreach(var med in listmed)
 			{
@@ -421,6 +421,59 @@ namespace Main
 						sqlCommand.ExecuteNonQuery();
 						connection.Close();
 						Console.WriteLine($"Sprzedano {med.Name} w ilości sztuk {med.Amount}");
+					}
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine(e.Message);
+				}
+			}
+
+			foreach(var ord in listrorder)
+			{
+				try
+				{
+					using (SqlConnection connection = new SqlConnection(connectionString))
+					{
+						var sqlCommand = new SqlCommand();
+						sqlCommand.Connection = connection;
+						sqlCommand.CommandText = @"INSERT INTO Orders (MedicineID, PrescriptionID, Date, Amount)
+											VALUES (@MedicineID, @PrescriptionID , @Date, @Amount);";
+
+						var sqlMedicineIDParam = new SqlParameter
+						{
+							DbType = System.Data.DbType.Int32,
+							Value = ord.MedicineID,
+							ParameterName = "@MedicineID"
+						};
+
+						var sqlPresciptionrParam = new SqlParameter
+						{
+							DbType = System.Data.DbType.Int32,
+							Value = ord.PrescriptionID,
+							ParameterName = "@PrescriptionID"
+						};
+
+						var sqlDateParam = new SqlParameter
+						{
+							DbType = System.Data.DbType.Date,
+							Value = ord.Date,
+							ParameterName = "@Date"
+						};
+
+						var sqlAmountParam = new SqlParameter
+						{
+							DbType = System.Data.DbType.Int32,
+							Value = ord.Amount,
+							ParameterName = "@Amount"
+						};
+						sqlCommand.Parameters.Add(sqlMedicineIDParam);
+						sqlCommand.Parameters.Add(sqlPresciptionrParam);
+						sqlCommand.Parameters.Add(sqlDateParam);
+						sqlCommand.Parameters.Add(sqlAmountParam);
+						connection.Open();
+						sqlCommand.ExecuteNonQuery();
+						connection.Close();
 					}
 				}
 				catch (Exception e)

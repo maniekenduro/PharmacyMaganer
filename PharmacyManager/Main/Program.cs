@@ -79,7 +79,7 @@ namespace Main
 					
 					case "Confirm":
 					case "cm":
-						SellModule.ConfirmSM(listmed, listrorder, listprescript);
+						SellModule.ConfirmSM(listmed, listrorder);
 						Console.Clear();
 						break;
 
